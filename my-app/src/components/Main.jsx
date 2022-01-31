@@ -1,43 +1,87 @@
-import React, {useEffect, useState} from "react";
-import axios from "axios"
+import React, { useEffect, useState } from "react";
+/* import axios from "axios"; */
+import { Card, Button } from "react-bootstrap";
+import "../App.css";
 
-import {Card, Button} from "react-bootstrap"
+export class MainPage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      error: null,
+      isLoaded: false,
+      items: [],
+    };
+  }
 
-
-
-export class Main extends React.Component {
-
-    render() {
-        const [header, litera, image, dt_publisher, setNews] = useState()
-        const scrollHandler = (e) => {
-            console.log(e)
+  componentDidMount() {
+    fetch(
+      "https://api.vashgorod.ru/v1/news/?city=1&group_id=1731&with_image=1&fields=id,url,header,litera,image,dt_publish"
+    )
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          this.setState({
+            isLoaded: true,
+            items: result.items,
+          });
+        },
+        (error) => {
+          this.setState({
+            isLoaded: true,
+            error,
+          });
         }
-        useEffect(() => {
-            axios.get("https://api.vashgorod.ru/v1/news/?city=1&group_id=1731&with_image=1&fields=id,url,header,litera,image,dt_publish")
-            .then(resoponse => setNews(resoponse.data))
-        })
-        useEffect(()=> {
-            document.addEventListener("scroll", scrollHandler)
-            return function() {
-                document.removeEventListener("scroll", scrollHandler)
-            }
-        }) 
-        return (
-            <Card style={{ width: '18rem' }}>
-            <Card.Img variant="top" src={image} />
-            <Card.Body>
-              <Card.Title>{header}</Card.Title>
-              <Card.Text>
-                {litera}
-              </Card.Text>
-              <Card.Text>
-                {dt_publisher}
-              </Card.Text>
-              <Button variant="primary">Go somewhere</Button>
-            </Card.Body>
-          </Card>  
-        )
+      );
+  }
+  render() {
+    const { error, isLoaded, items } = this.state;
+    if (error) {
+      return <div>Ошибка: {error.message}</div>;
+    } else if (!isLoaded) {
+      return <div>Идет загрузка...</div>;
+    } else {
+      return (
+        <div>
+          {items.map((item) => (
+            <Card style={{ width: "500px" }} key={item.id}>
+              <Card.Img
+                variant='left'
+                src={item.image}
+                style={{ width: "150px", height: "150px" }}
+              />
+              <Card.Body>
+                <Card.Title>{item.header}</Card.Title>
+                <Card.Text>{item.litera}</Card.Text>
+                <Card.Text>{item.dt_publish}</Card.Text>
+                <Button variant='primary'>Подробнее</Button>
+              </Card.Body>
+            </Card>
+          ))}
+        </div>
+      );
     }
+  }
 }
 
-export default(Main)
+/* return (
+    response.data.map(newLine => {
+<div>
+
+
+         <Card style={{ width: "18rem" }} key={newLine.id }>
+      <Card.Img variant='top' src=""/>
+      <Card.Body>
+        <Card.Title>{newLine.header}</Card.Title>
+        <Card.Text>{newLine.litera}</Card.Text>
+        <Card.Text>{newLine.dt_publish}</Card.Text>
+        <Button variant='primary'>Go somewhere</Button>
+      </Card.Body>
+    </Card>
+
+    </div>
+    })
+
+  );
+} */
+
+export default MainPage;
