@@ -14,4 +14,11 @@ code {
 
 .card {
   flex-direction: inherit!important;
+  margin: auto;
+  margin-bottom: 10px;
+  
+}
+.container {
+  width: 540px!important;
+  border: 2px solid;
 }

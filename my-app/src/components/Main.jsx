@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React/* , { useEffect, useState } */ from "react";
 /* import axios from "axios"; */
-import { Card, Button } from "react-bootstrap";
+import {Link} from 'react-router-dom';
+import { Card} from "react-bootstrap";
+
 import "../App.css";
+
 
 export class MainPage extends React.Component {
   constructor(props) {
@@ -34,6 +37,7 @@ export class MainPage extends React.Component {
       );
   }
   render() {
+    
     const { error, isLoaded, items } = this.state;
     if (error) {
       return <div>Ошибка: {error.message}</div>;
@@ -41,19 +45,21 @@ export class MainPage extends React.Component {
       return <div>Идет загрузка...</div>;
     } else {
       return (
-        <div>
+        <div className="container">
           {items.map((item) => (
+           
             <Card style={{ width: "500px" }} key={item.id}>
               <Card.Img
                 variant='left'
                 src={item.image}
-                style={{ width: "150px", height: "150px" }}
+                style={{ width: "150px", height: "110px", margin:"auto"   }}
               />
               <Card.Body>
                 <Card.Title>{item.header}</Card.Title>
                 <Card.Text>{item.litera}</Card.Text>
                 <Card.Text>{item.dt_publish}</Card.Text>
-                <Button variant='primary'>Подробнее</Button>
+                
+                <Link to={ {pathname:"/news/" + item.id} } className="button-text" > Подробнее</Link>
               </Card.Body>
             </Card>
           ))}
